@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>城之内 蓮 | Futsal Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=Barlow:wght@400;600;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --neon-yellow: #D4FF00;
+  --neon-green: #00FF88;
+  --dark-bg: #0A0A0A;
+  --dark-card: #141414;
+  --dark-surface: #1A1A1A;
+  --text-primary: #FFFFFF;
+  --text-secondary: #888888;
+  --gradient-neon: linear-gradient(135deg, var(--neon-yellow), var(--neon-green));
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-marker: 'Permanent Marker', cursive;
+  --font-body: 'Barlow', sans-serif;
+  --font-jp: 'Noto Sans JP', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-yellow) var(--dark-bg);
+}
+
+body {
+  background: var(--dark-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+/* ========== NAVIGATION ========== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.4s, backdrop-filter 0.4s;
+}
+.nav.scrolled {
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.1em;
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  font-weight: 600;
+}
+.nav-links a:hover { color: var(--neon-yellow); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1001;
+}
+.hamburger span {
+  width: 28px; height: 2px;
+  background: var(--neon-yellow);
+  transition: 0.3s;
+}
+
+/* ========== HERO ========== */
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(212,255,0,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,255,136,0.06) 0%, transparent 50%),
+    var(--dark-bg);
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212,255,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,255,0,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 2rem;
+}
+.hero-number {
+  font-family: var(--font-display);
+  font-size: clamp(8rem, 20vw, 16rem);
+  line-height: 0.85;
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0;
+  animation: slideUp 1s 0.3s forwards;
+}
+.hero-name-en {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  letter-spacing: 0.15em;
+  line-height: 1;
+  margin-top: -0.5rem;
+  opacity: 0;
+  animation: slideUp 1s 0.6s forwards;
+}
+.hero-name-jp {
+  font-family: var(--font-jp);
+  font-weight: 900;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  letter-spacing: 0.5em;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+  opacity: 0;
+  animation: slideUp 1s 0.8s forwards;
+}
+.hero-tagline {
+  font-family: var(--font-marker);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: var(--neon-yellow);
+  margin-top: 2rem;
+  transform: rotate(-2deg);
+  opacity: 0;
+  animation: slideUp 1s 1s forwards;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeIn 1s 1.5s forwards;
+}
+.hero-scroll span {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 50px;
+  background: var(--gradient-neon);
+  animation: scrollPulse 2s infinite;
+}
+
+/* ========== SECTION COMMON ========== */
+.section {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+.section-label {
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  letter-spacing: 0.4em;
+  color: var(--neon-yellow);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-label::before {
+  content: '';
+  width: 40px;
+  height: 2px;
+  background: var(--gradient-neon);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 3rem;
+}
+.neon-text {
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Diagonal divider */
+.divider-skew {
+  height: 80px;
+  background: var(--dark-surface);
+  clip-path: polygon(0 60%, 100% 0, 100% 100%, 0 100%);
+  margin-top: -1px;
+}
+.divider-skew-reverse {
+  height: 80px;
+  background: var(--dark-bg);
+  clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
+  margin-top: -1px;
+}
+
+/* ========== ABOUT ========== */
+.about-section {
+  background: var(--dark-surface);
+  padding: 8rem 2rem;
+}
+.about-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.about-image {
+  position: relative;
+  aspect-ratio: 3/4;
+  background: var(--dark-card);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.about-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  position: relative;
+}
+.about-image-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212,255,0,0.05), rgba(0,255,136,0.05));
+}
+.about-image-frame {
+  position: absolute;
+  top: -8px; left: -8px;
+  right: 8px; bottom: 8px;
+  border: 2px solid var(--neon-yellow);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.about-text p {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+.about-text p strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.about-quote {
+  font-family: var(--font-marker);
+  font-size: 1.5rem;
+  color: var(--neon-yellow);
+  transform: rotate(-1deg);
+  margin-top: 2rem;
+  padding-left: 1.5rem;
+  border-left: 3px solid var(--neon-green);
+}
+
+/* ========== STATS ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+.stat-card {
+  background: var(--dark-card);
+  border: 1px solid rgba(212,255,0,0.1);
+  border-radius: 8px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--neon-yellow);
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-neon);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.stat-card:hover::before { transform: scaleX(1); }
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  line-height: 1;
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label {
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.achievements {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.achievement-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  background: var(--dark-card);
+  border-radius: 8px;
+  border-left: 4px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+.achievement-item:hover {
+  border-left-color: var(--neon-yellow);
+  background: rgba(212,255,0,0.03);
+}
+.achievement-year {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--neon-green);
+  min-width: 80px;
+}
+.achievement-text {
+  font-family: var(--font-jp);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.achievement-text .award {
+  color: var(--neon-yellow);
+  font-weight: 700;
+}
+
+/* ========== GALLERY ========== */
+.gallery-section {
+  background: var(--dark-surface);
+  padding: 8rem 2rem;
+}
+.gallery-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 250px;
+  gap: 1rem;
+}
+.gallery-item {
+  background: var(--dark-card);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.4s;
+}
+.gallery-item:hover { transform: scale(1.02); }
+.gallery-item:nth-child(1) { grid-row: span 2; }
+.gallery-item:nth-child(4) { grid-column: span 2; }
+.gallery-item-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  background: linear-gradient(135deg, rgba(212,255,0,0.03), rgba(0,255,136,0.03));
+  transition: background 0.3s;
+}
+.gallery-item:hover .gallery-item-inner {
+  background: linear-gradient(135deg, rgba(212,255,0,0.08), rgba(0,255,136,0.08));
+}
+.gallery-item-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.gallery-item:hover .gallery-item-overlay { opacity: 1; }
+.gallery-item-overlay span {
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+/* ========== MOVIE ========== */
+.movie-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.movie-embed {
+  aspect-ratio: 16/9;
+  background: var(--dark-card);
+  border-radius: 8px;
+  border: 1px solid rgba(212,255,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.play-button {
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--neon-yellow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+  z-index: 2;
+}
+.play-button:hover {
+  transform: scale(1.1);
+  background: rgba(212,255,0,0.1);
+}
+.play-button svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--neon-yellow);
+  margin-left: 4px;
+}
+.movie-embed::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212,255,0,0.03), rgba(0,255,136,0.03));
+}
+.movie-label {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-family: var(--font-jp);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ========== SPONSORS ========== */
+.sponsors-section {
+  background: var(--dark-surface);
+  padding: 8rem 2rem;
+}
+.sponsors-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.sponsors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+.sponsor-card {
+  background: var(--dark-card);
+  border: 1px solid rgba(212,255,0,0.08);
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.sponsor-card:hover {
+  border-color: var(--neon-yellow);
+}
+.sponsor-logo-placeholder {
+  width: 120px;
+  height: 60px;
+  margin: 0 auto 1.5rem;
+  border: 1px dashed var(--text-secondary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+.sponsor-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.sponsor-desc {
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.sponsor-cta {
+  background: var(--dark-card);
+  border: 2px solid var(--neon-yellow);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+}
+.sponsor-cta h3 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+.sponsor-cta p {
+  font-family: var(--font-jp);
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.btn-neon {
+  display: inline-block;
+  padding: 1rem 3rem;
+  background: var(--gradient-neon);
+  color: var(--dark-bg);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: none;
+  cursor: pointer;
+}
+.btn-neon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212,255,0,0.3);
+}
+
+/* ========== CONTACT ========== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.form-group label {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: var(--neon-yellow);
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+  background: var(--dark-card);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 1rem;
+  color: var(--text-primary);
+  font-family: var(--font-jp);
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+  outline: none;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--neon-yellow);
+}
+.form-group textarea { resize: vertical; min-height: 140px; }
+.form-group select { cursor: pointer; }
+.form-group select option { background: var(--dark-card); }
+
+.contact-info {
+  padding-top: 1rem;
+}
+.contact-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+.sns-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+.sns-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--dark-card);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  transition: background 0.3s, transform 0.3s;
+}
+.sns-link:hover {
+  background: rgba(212,255,0,0.05);
+  transform: translateX(4px);
+}
+.sns-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(212,255,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.contact-note {
+  font-family: var(--font-jp);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  padding: 1.5rem;
+  border-left: 2px solid var(--neon-green);
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  background: var(--gradient-neon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+.footer p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); transform-origin: top; }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s, transform 0.8s;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.97);
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    z-index: 999;
+  }
+  .nav-links.open a { font-size: 1.5rem; }
+  .hamburger { display: flex; }
+
+  .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .about-image { max-height: 400px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 200px;
+  }
+  .gallery-item:nth-child(1) { grid-row: span 1; }
+  .gallery-item:nth-child(4) { grid-column: span 1; }
+  .sponsors-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .section { padding: 5rem 1.5rem; }
+  .about-section,
+  .gallery-section,
+  .sponsors-section { padding: 5rem 1.5rem; }
+}
+
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .stat-card { padding: 1.5rem 1rem; }
+  .stat-number { font-size: 2.5rem; }
+  .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
+  .achievement-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 1.2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">REN #10</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" onclick="closeMenu()">About</a></li>
+    <li><a href="#stats" onclick="closeMenu()">Stats</a></li>
+    <li><a href="#gallery" onclick="closeMenu()">Gallery</a></li>
+    <li><a href="#movie" onclick="closeMenu()">Movie</a></li>
+    <li><a href="#sponsors" onclick="closeMenu()">Sponsors</a></li>
+    <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-content">
+    <div class="hero-number">#10</div>
+    <h1 class="hero-name-en">REN JOUNOUCHI</h1>
+    <p class="hero-name-jp">城之内 蓮 ― FUTSAL PLAYER</p>
+    <p class="hero-tagline">"Make Futsal Bigger."</p>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<div class="divider-skew"></div>
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <div class="about-image reveal">
+      <div class="about-image-placeholder">PLAYER PHOTO</div>
+      <div class="about-image-frame"></div>
+    </div>
+    <div class="about-text reveal">
+      <div class="section-label">ABOUT</div>
+      <h2 class="section-title">FROM THE <span class="neon-text">STREET</span><br>TO THE PITCH</h2>
+      <p>
+        横浜の路地裏で、仲間とひたすらボールを蹴っていた少年時代。<strong>高校のサッカー部に入れなかった挫折</strong>が、人生を変える転機になった。
+      </p>
+      <p>
+        地元のフットサルコートで出会った"5人制のサッカー"。狭いピッチの中で求められる<strong>圧倒的なテクニックとスピード</strong>に心を奪われ、本格的に競技の道へ。
+      </p>
+      <p>
+        大学在学中にFリーグのトライアウトに合格。1年目からスタメンに定着し、SNSで公開したトリックプレー動画は<strong>累計再生回数500万回</strong>を突破。
+      </p>
+      <p>
+        今、ピッチの上で証明したいことは一つ。<br><strong>フットサルは、もっと熱くなれる。</strong>
+      </p>
+      <div class="about-quote">"Streetで磨いた技で、アリーナを沸かす"</div>
+    </div>
+  </div>
+</section>
+<div class="divider-skew-reverse"></div>
+
+<!-- STATS & ACHIEVEMENTS -->
+<section class="section" id="stats">
+  <div class="section-label reveal">STATS & ACHIEVEMENTS</div>
+  <h2 class="section-title reveal">NUMBERS <span class="neon-text">DON'T LIE</span></h2>
+  <div class="stats-grid reveal">
+    <div class="stat-card">
+      <div class="stat-number">148</div>
+      <div class="stat-label">出場試合数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">67</div>
+      <div class="stat-label">通算ゴール</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">43</div>
+      <div class="stat-label">アシスト</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">5</div>
+      <div class="stat-label">シーズンMVP</div>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:1.5rem;letter-spacing:0.15em;margin-bottom:1.5rem;color:var(--neon-green);" class="reveal">CAREER HIGHLIGHTS</h3>
+  <div class="achievements reveal">
+    <div class="achievement-item">
+      <span class="achievement-year">2025</span>
+      <div class="achievement-text">Fリーグ <span class="award">得点王</span>（21ゴール）/ オールスター選出</div>
+    </div>
+    <div class="achievement-item">
+      <span class="achievement-year">2024</span>
+      <div class="achievement-text">Fリーグ <span class="award">ベストイレブン</span> 初選出 / チーム年間最優秀選手</div>
+    </div>
+    <div class="achievement-item">
+      <span class="achievement-year">2023</span>
+      <div class="achievement-text"><span class="award">日本代表初招集</span> / AFC フットサル選手権 出場</div>
+    </div>
+    <div class="achievement-item">
+      <span class="achievement-year">2022</span>
+      <div class="achievement-text">Fリーグ1年目・<span class="award">新人王</span>受賞 / 開幕戦ハットトリック</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<div class="divider-skew"></div>
+<section class="gallery-section" id="gallery">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label reveal">GALLERY</div>
+    <h2 class="section-title reveal">ON & OFF <span class="neon-text">THE PITCH</span></h2>
+  </div>
+  <div class="gallery-grid reveal">
+    <div class="gallery-item">
+      <div class="gallery-item-inner">MATCH DAY</div>
+      <div class="gallery-item-overlay"><span>2025 Fリーグ 第12節 vs. 名古屋</span></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner">TRAINING</div>
+      <div class="gallery-item-overlay"><span>日々のトレーニング風景</span></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner">CELEBRATION</div>
+      <div class="gallery-item-overlay"><span>ゴールセレブレーション</span></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner">OFF THE PITCH</div>
+      <div class="gallery-item-overlay"><span>オフの日・ストリートセッション</span></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner">COMMUNITY</div>
+      <div class="gallery-item-overlay"><span>地域スクール活動</span></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-item-inner">PORTRAIT</div>
+      <div class="gallery-item-overlay"><span>プロフィール撮影</span></div>
+    </div>
+  </div>
+</section>
+<div class="divider-skew-reverse"></div>
+
+<!-- MOVIE -->
+<section class="section" id="movie">
+  <div class="section-label reveal">MOVIE</div>
+  <h2 class="section-title reveal">HIGHLIGHT <span class="neon-text">REEL</span></h2>
+  <div class="movie-container reveal">
+    <div class="movie-embed">
+      <div class="play-button">
+        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+    <p class="movie-label">2025シーズン ベストゴール集 ― 準備中</p>
+  </div>
+</section>
+
+<!-- SPONSORS -->
+<div class="divider-skew"></div>
+<section class="sponsors-section" id="sponsors">
+  <div class="sponsors-inner">
+    <div class="section-label reveal">SPONSORS</div>
+    <h2 class="section-title reveal">OUR <span class="neon-text">PARTNERS</span></h2>
+    <div class="sponsors-grid reveal">
+      <div class="sponsor-card">
+        <div class="sponsor-logo-placeholder">LOGO</div>
+        <div class="sponsor-name">GRILL KING</div>
+        <div class="sponsor-desc">横浜発の飲食チェーン<br>メインスポンサー</div>
+      </div>
+      <div class="sponsor-card">
+        <div class="sponsor-logo-placeholder">LOGO</div>
+        <div class="sponsor-name">VORTEX SPORTS</div>
+        <div class="sponsor-desc">フットサル用品メーカー<br>用具サプライヤー</div>
+      </div>
+      <div class="sponsor-card">
+        <div class="sponsor-logo-placeholder">LOGO</div>
+        <div class="sponsor-name">YOUR BRAND?</div>
+        <div class="sponsor-desc">新規スポンサー募集中<br>お気軽にお問い合わせください</div>
+      </div>
+    </div>
+    <div class="sponsor-cta reveal">
+      <h3>PARTNERSHIP <span class="neon-text">PLANS</span></h3>
+      <p>城之内蓮と一緒にフットサルの未来を創りませんか？<br>ユニフォーム掲出・SNSタイアップ・イベント出演など、<br>多彩なプランをご用意しています。</p>
+      <a href="#contact" class="btn-neon">CONTACT US</a>
+    </div>
+  </div>
+</section>
+<div class="divider-skew-reverse"></div>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-label reveal">CONTACT</div>
+  <h2 class="section-title reveal">GET IN <span class="neon-text">TOUCH</span></h2>
+  <div class="contact-grid reveal">
+    <div class="contact-form">
+      <div class="form-group">
+        <label>NAME</label>
+        <input type="text" placeholder="お名前">
+      </div>
+      <div class="form-group">
+        <label>EMAIL</label>
+        <input type="email" placeholder="メールアドレス">
+      </div>
+      <div class="form-group">
+        <label>CATEGORY</label>
+        <select>
+          <option value="">お問い合わせ種別を選択</option>
+          <option>スポンサーシップについて</option>
+          <option>取材・出演依頼</option>
+          <option>イベント・スクール</option>
+          <option>ファンレター</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>MESSAGE</label>
+        <textarea placeholder="お問い合わせ内容"></textarea>
+      </div>
+      <button class="btn-neon" type="button" onclick="alert('※サンプルサイトのため送信機能はありません')">SEND MESSAGE</button>
+    </div>
+    <div class="contact-info">
+      <h3>FOLLOW <span class="neon-text">REN</span></h3>
+      <div class="sns-links">
+        <a href="#" class="sns-link">
+          <div class="sns-icon">𝕏</div>
+          <span>@ren_jounouchi_10</span>
+        </a>
+        <a href="#" class="sns-link">
+          <div class="sns-icon">IG</div>
+          <span>@ren.futsal.10</span>
+        </a>
+        <a href="#" class="sns-link">
+          <div class="sns-icon">YT</div>
+          <span>REN FUTSAL Channel</span>
+        </a>
+        <a href="#" class="sns-link">
+          <div class="sns-icon">TT</div>
+          <span>@ren_tricks</span>
+        </a>
+      </div>
+      <div class="contact-note">
+        お仕事のご依頼は上記フォームまたは所属チーム広報までご連絡ください。ファンレターも大歓迎です。必ず目を通しています。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">REN JOUNOUCHI #10</div>
+  <p>&copy; 2026 Ren Jounouchi. All Rights Reserved. ― This is a sample website.</p>
+</footer>
+
+<script>
+// Navigation scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+});
+
+// Hamburger menu
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
