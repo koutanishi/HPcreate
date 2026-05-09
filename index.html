@@ -36,10 +36,10 @@ body {
   font-family: var(--font-body);
   overflow-x: hidden;
 }
-body.menu-open {
+body.menu-open,
+html.menu-open {
   overflow: hidden;
-  position: fixed;
-  width: 100%;
+  height: 100%;
 }
 
 /* ========== NAVIGATION ========== */
@@ -764,6 +764,7 @@ body.menu-open {
     -webkit-overflow-scrolling: touch;
     visibility: hidden;
     opacity: 0;
+    overscroll-behavior: contain;
     transition: opacity 0.4s cubic-bezier(0.23,1,0.32,1),
                 visibility 0.4s;
   }
@@ -1078,7 +1079,6 @@ window.addEventListener('scroll', () => {
 });
 
 // Hamburger menu
-let menuScrollY = 0;
 function toggleMenu() {
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
@@ -1086,8 +1086,7 @@ function toggleMenu() {
   if (isOpen) {
     closeMenu();
   } else {
-    menuScrollY = window.scrollY;
-    document.body.style.top = `-${menuScrollY}px`;
+    document.documentElement.classList.add('menu-open');
     document.body.classList.add('menu-open');
     navLinks.classList.add('open');
     hamburger.classList.add('active');
@@ -1098,9 +1097,8 @@ function closeMenu() {
   const hamburger = document.getElementById('hamburger');
   navLinks.classList.remove('open');
   hamburger.classList.remove('active');
+  document.documentElement.classList.remove('menu-open');
   document.body.classList.remove('menu-open');
-  document.body.style.top = '';
-  window.scrollTo(0, menuScrollY);
 }
 
 // Scroll reveal
