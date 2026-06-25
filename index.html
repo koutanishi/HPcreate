@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -231,21 +231,25 @@ h1,h2,h3,h4,p{margin:0;}
 
 @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;}*{animation-duration:.001ms !important;}}
 
-/* SPLASH / OPENING MOTION (simple, robust pattern) */
-html.no-scroll, body.no-scroll{overflow:hidden;height:100%;}
+/* SPLASH / OPENING MOTION ── pure-CSS, no JS dependency.
+   The whole show→hold→hide sequence runs as ONE CSS animation on #splash,
+   so it always plays even if every other script on the page fails. */
 #splash{
   position:fixed;inset:0;z-index:9999;
   background:radial-gradient(120% 120% at 50% 30%, #14305c 0%, var(--navy) 55%, #06101f 100%);
   display:flex;align-items:center;justify-content:center;flex-direction:column;
-  transition:opacity .6s ease, visibility .6s ease;
-  opacity:1;
+  animation:splashSequence 3s ease forwards;
 }
-#splash.is-hidden{opacity:0;visibility:hidden;}
+@keyframes splashSequence{
+  0%   {opacity:1;visibility:visible;}
+  82%  {opacity:1;visibility:visible;}
+  100% {opacity:0;visibility:hidden;}
+}
 #splash .splash-logo{
   width:clamp(170px, 42vw, 320px);
   height:auto;
   opacity:0;
-  animation:splashLogoIn 900ms cubic-bezier(.22,.8,.32,1) 120ms forwards;
+  animation:splashLogoIn 900ms cubic-bezier(.22,.8,.32,1) 150ms forwards;
 }
 #splash .splash-bar{
   width:180px;height:3px;border-radius:2px;
@@ -256,7 +260,7 @@ html.no-scroll, body.no-scroll{overflow:hidden;height:100%;}
   content:'';position:absolute;left:0;top:0;height:100%;width:0%;
   background:linear-gradient(90deg, var(--blue), var(--orange));
   border-radius:2px;
-  animation:splashBarFill 1.5s ease-in-out 200ms forwards;
+  animation:splashBarFill 1.6s ease-in-out 300ms forwards;
 }
 @keyframes splashLogoIn{
   0%{opacity:0;transform:translateY(10px) scale(.94);}
@@ -264,10 +268,42 @@ html.no-scroll, body.no-scroll{overflow:hidden;height:100%;}
 }
 @keyframes splashBarFill{ to{ width:100%; } }
 @media (prefers-reduced-motion: reduce){
-  #splash{display:none;}
+  #splash{animation:none;opacity:0;visibility:hidden;}
 }
 .nav-logo-img{height:30px;width:auto;display:block;}
 .footer-logo-img{height:26px;width:auto;display:block;filter:brightness(0) invert(1);opacity:.9;}
+/* CONCEPT — editorial text + stat rows (replaces plain card grid) */
+.concept-row{display:grid;grid-template-columns:1fr;gap:32px;}
+@media (min-width:760px){.concept-row{grid-template-columns:1.15fr 1fr;gap:64px;align-items:start;}}
+.concept-copy p{font-size:.95rem;line-height:2.1;color:var(--text-muted);margin-top:16px;}
+.concept-copy p:first-child{margin-top:0;}
+.concept-copy p strong{color:var(--text);font-weight:800;}
+.concept-stats{display:flex;flex-direction:column;}
+.concept-stat-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:20px 0;border-bottom:1px solid var(--line);}
+.concept-stat-row:first-child{border-top:1px solid var(--line);}
+.concept-stat-row span{font-size:.74rem;color:var(--text-muted);font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.concept-stat-row b{font-size:1.5rem;font-weight:800;color:var(--navy);white-space:nowrap;}
+
+/* WHY ATHSAPO — editorial numbered rows (visually distinct from card grids) */
+.why-list{border-top:1px solid var(--line);}
+.why-row{display:grid;grid-template-columns:56px 1fr;gap:18px;padding:30px 0;border-bottom:1px solid var(--line);align-items:start;}
+@media (min-width:760px){.why-row{grid-template-columns:80px 1fr 1.3fr;gap:32px;}}
+.why-num{font-size:1.5rem;font-weight:800;color:var(--line);line-height:1;}
+.why-row h3{font-size:.98rem;font-weight:800;color:var(--text);}
+.why-row p{font-size:.86rem;color:var(--text-muted);line-height:1.9;grid-column:2/-1;}
+@media (min-width:760px){.why-row p{grid-column:auto;}}
+
+/* PROCESS — vertical timeline with connecting line (premium, replaces flat list) */
+.timeline-wrap{position:relative;padding-left:46px;}
+.timeline-wrap::before{content:'';position:absolute;left:14px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom, var(--blue), var(--orange));}
+.timeline-step{position:relative;padding-bottom:34px;}
+.timeline-step:last-child{padding-bottom:0;}
+.timeline-step::before{content:'';position:absolute;left:-46px;top:2px;width:13px;height:13px;border-radius:50%;background:var(--white);border:3px solid var(--blue);box-shadow:0 0 0 4px var(--bg);}
+.timeline-step:last-child::before{border-color:var(--orange);}
+.timeline-step .step-label{font-size:.7rem;font-weight:800;letter-spacing:.06em;color:var(--blue);text-transform:uppercase;margin-bottom:4px;}
+.timeline-step:last-child .step-label{color:var(--orange);}
+.timeline-step h4{font-size:.95rem;font-weight:800;color:var(--text);margin-bottom:5px;}
+.timeline-step p{font-size:.84rem;color:var(--text-muted);line-height:1.8;}
 </style>
 </head>
 <body>
@@ -326,57 +362,50 @@ html.no-scroll, body.no-scroll{overflow:hidden;height:100%;}
   </div>
 </section>
 
-<!-- ABOUT -->
+<!-- CONCEPT -->
 <section class="section section--alt">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">ABOUT ATHSAPO</span>
       <h2>アスサポとは</h2>
-      <p style="font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:4px;">Athlete <span style="color:var(--orange);">×</span> Supporters</p>
-      <p>選手と、選手をサポートしたい人を繋げる。それがアスサポです。競技経験者がディレクションし、選手の価値がきちんと伝わる公式サイトをつくります。</p>
     </div>
-    <div class="about-grid">
-      <div class="about-item reveal">
-        <span class="ic">01</span>
-        <h3>競技を知っている人間がつくる</h3>
-        <p>選手として何を見せるべきかを最初から理解しています。スポーツを知らない制作会社にはできないことがあります。</p>
+    <div class="concept-row reveal">
+      <div class="concept-copy">
+        <p style="font-size:1.05rem;font-weight:800;color:var(--navy);">Athlete <span style="color:var(--orange);">×</span> Supporters</p>
+        <p>選手と、選手をサポートしたい人を繋げる。それがアスサポです。<strong>競技経験者がディレクション</strong>し、選手の価値がきちんと伝わる公式サイトをつくります。</p>
+        <p>対象はアスリートだけではありません。<strong>フリーランス・クリエイター・トレーナー</strong>など実績はあるが発信の場所がない方、<strong>会社立ち上げ初期</strong>でまず「ちゃんとした顔」をWeb上に持ちたい方にも対応しています。</p>
       </div>
-      <div class="about-item reveal">
-        <span class="ic">02</span>
-        <h3>スポンサー獲得を意識した設計</h3>
-        <p>企業担当者が「この選手と組みたい」と思う、実績・ビジョンの見せ方を構成段階から設計します。</p>
-      </div>
-      <div class="about-item reveal">
-        <span class="ic">03</span>
-        <h3>どんなフェーズでも対応</h3>
-        <p>個人活動の立ち上げから法人化直後のブランディングまで。競技・業種・知名度を問いません。</p>
+      <div class="concept-stats">
+        <div class="concept-stat-row"><span>Website Only</span><b>¥50,000〜</b></div>
+        <div class="concept-stat-row"><span>Blog / Fan Club</span><b>¥100,000〜</b></div>
+        <div class="concept-stat-row"><span>Delivery</span><b>最短2週間</b></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TARGET / REASONS -->
+<!-- WHY ATHSAPO -->
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">FOR</span>
-      <h2>こんな方へ</h2>
+      <span class="eyebrow">WHY ATHSAPO</span>
+      <h2>選ばれる理由</h2>
     </div>
-    <div class="reason-grid reveal">
-      <div class="reason-card">
-        <div class="reason-num">01</div>
-        <h3>アスリート</h3>
-        <p>スポンサー獲得・認知拡大・自己ブランディングをしたい選手。競技の外でも、あなたの価値が届く場所をつくります。</p>
+    <div class="why-list reveal">
+      <div class="why-row">
+        <div class="why-num">01</div>
+        <h3>競技を知っている人間がつくる</h3>
+        <p>選手として何を見せるべきかを最初から理解しています。スポーツを知らない制作会社にはできないことがあります。</p>
       </div>
-      <div class="reason-card">
-        <div class="reason-num">02</div>
-        <h3>個人で活動されている方</h3>
-        <p>フリーランス・クリエイター・トレーナー・講師など、実績はあるが発信の場所がない方。</p>
+      <div class="why-row">
+        <div class="why-num">02</div>
+        <h3>スポンサー獲得を意識した設計</h3>
+        <p>企業担当者が「この選手と組みたい」と思う、実績・ビジョンの見せ方を構成段階から設計します。</p>
       </div>
-      <div class="reason-card">
-        <div class="reason-num">03</div>
-        <h3>会社立ち上げ初期の方</h3>
-        <p>まず「ちゃんとした顔」をWeb上につくりたい方。スタートに必要なものを、適正な価格で。</p>
+      <div class="why-row">
+        <div class="why-num">03</div>
+        <h3>どんなフェーズでも対応</h3>
+        <p>個人活動の立ち上げから法人化直後のブランディングまで。競技・業種・知名度を問いません。</p>
       </div>
     </div>
   </div>
@@ -493,29 +522,34 @@ html.no-scroll, body.no-scroll{overflow:hidden;height:100%;}
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">FLOW</span>
+      <span class="eyebrow">PROCESS</span>
       <h2>制作の流れ</h2>
     </div>
-    <div class="flow-list reveal">
-      <div class="flow-item">
-        <span class="flow-num">01</span>
-        <div><h4>お問い合わせ（無料）</h4><p>競技・目的・ご希望をヒアリングします。</p></div>
+    <div class="timeline-wrap reveal">
+      <div class="timeline-step">
+        <div class="step-label">Step 01</div>
+        <h4>お問い合わせ（無料）</h4>
+        <p>競技・目的・ご希望をヒアリングします。</p>
       </div>
-      <div class="flow-item">
-        <span class="flow-num">02</span>
-        <div><h4>プラン選択</h4><p>必要な機能をヒアリングし、最適なプランをご提案します。</p></div>
+      <div class="timeline-step">
+        <div class="step-label">Step 02</div>
+        <h4>プラン選択</h4>
+        <p>必要な機能をヒアリングし、最適なプランをご提案します。</p>
       </div>
-      <div class="flow-item">
-        <span class="flow-num">03</span>
-        <div><h4>ヒアリング・素材収集</h4><p>写真・プロフィール・実績などをご提供いただきます。</p></div>
+      <div class="timeline-step">
+        <div class="step-label">Step 03</div>
+        <h4>ヒアリング・素材収集</h4>
+        <p>写真・プロフィール・実績などをご提供いただきます。</p>
       </div>
-      <div class="flow-item">
-        <span class="flow-num">04</span>
-        <div><h4>制作</h4><p>1週間で初稿を提出。修正点を擦り合わせ、2週間で完全納品します。</p></div>
+      <div class="timeline-step">
+        <div class="step-label">Step 04</div>
+        <h4>制作</h4>
+        <p>1週間で初稿を提出。修正点を擦り合わせ、2週間で完全納品します。</p>
       </div>
-      <div class="flow-item">
-        <span class="flow-num">05</span>
-        <div><h4>公開・運用開始</h4><p>公開後もサポートします。</p></div>
+      <div class="timeline-step">
+        <div class="step-label">Step 05</div>
+        <h4>公開・運用開始</h4>
+        <p>公開後もサポートします。</p>
       </div>
     </div>
   </div>
@@ -627,31 +661,21 @@ html.no-scroll, body.no-scroll{overflow:hidden;height:100%;}
   "use strict";
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var splash = document.getElementById('splash');
-  if (splash) {
-    if (reduceMotion) {
-      splash.remove();
-    } else {
-      document.documentElement.classList.add('no-scroll');
-      document.body.classList.add('no-scroll');
-      function hideSplash() {
-        splash.classList.add('is-hidden');
-        document.documentElement.classList.remove('no-scroll');
-        document.body.classList.remove('no-scroll');
-        window.setTimeout(function () { if (splash.parentNode) splash.remove(); }, 700);
-      }
-      // Wait for full page load (images/fonts), then hold briefly, then fade out.
-      // Fallback timer guarantees the splash is removed even if 'load' never fires.
-      var splashDone = false;
-      function triggerHide() {
-        if (splashDone) return;
-        splashDone = true;
-        window.setTimeout(hideSplash, 600);
-      }
-      window.addEventListener('load', triggerHide);
-      window.setTimeout(triggerHide, 2500);
+  // Splash visuals are 100% CSS-driven (see #splash keyframes) — this JS only
+  // tidies up the DOM afterwards and is wrapped defensively so it can never
+  // block or break the animation itself.
+  try {
+    var splash = document.getElementById('splash');
+    if (splash) {
+      splash.addEventListener('animationend', function(){
+        if (splash.parentNode) splash.parentNode.removeChild(splash);
+      });
+      // Safety net in case animationend doesn't fire for any reason.
+      window.setTimeout(function(){
+        if (splash.parentNode) splash.parentNode.removeChild(splash);
+      }, 3500);
     }
-  }
+  } catch (e) { /* no-op: CSS animation already handles the visual hide */ }
   var revealEls = document.querySelectorAll('.reveal');
   if (reduceMotion || !('IntersectionObserver' in window)) {
     revealEls.forEach(function(el){ el.classList.add('is-visible'); });
